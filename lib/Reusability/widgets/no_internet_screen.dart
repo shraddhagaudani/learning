@@ -24,7 +24,7 @@ class _NoInterNetScreenState extends State<NoInterNetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenHeight = MediaQuery.sizeOf(context).height;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: PopScope(

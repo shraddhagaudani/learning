@@ -1,6 +1,5 @@
-
 import 'package:get/get_navigation/src/routes/get_route.dart';
-
+import 'package:learning/app/modules/login/views/loginpage.dart';
 import '../app/modules/ai_detail/bindings/ai_animator_binding.dart';
 import '../app/modules/ai_detail/views/ai_animator_view.dart';
 import '../app/modules/crop_image/bindings/crop_image_binding.dart';
@@ -27,7 +26,8 @@ class AppPages {
   AppPages._();
 
   // ignore: constant_identifier_names
-  static String initial = Routes.splash;
+  // static String initial = Routes.splash;
+  static String initial = Routes.loginPage;
 
   static final routes = [
     GetPage(
@@ -97,6 +97,10 @@ class AppPages {
         filterName: '',
       ),
       binding: PhotoSelectBinding(),
+    ),GetPage(
+      name: _Paths.loginPage,
+      page: () => LoginPage(),
+      // binding: PhotoSelectBinding(),
     ),
   ];
 }

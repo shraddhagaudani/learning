@@ -12,6 +12,7 @@ abstract class Routes {
   static const aiDetails = _Paths.aiDetails;
   static const cropImage = _Paths.cropImageView;
   static const selectPhotoView = _Paths.selectPhotoView;
+  static const loginPage = _Paths.loginPage;
 }
 
 abstract class _Paths {
@@ -26,4 +27,5 @@ abstract class _Paths {
   static const aiDetails = '/AI_DETAILS';
   static const cropImageView = '/cropImage';
   static const selectPhotoView = '/selectPhotoView';
+  static const loginPage = '/loginpage';
 }
