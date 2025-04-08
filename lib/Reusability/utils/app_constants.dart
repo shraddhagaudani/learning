@@ -2,14 +2,19 @@ class ApiAppConstants {
   // Network Constants
   static const bool isLive = true;
 
-  static const String localEndPoint = "http://192.168.29.87:8004/"; // Local
-  static const String liveEndPoint = "https://aiapi.uniqcrafts.com/"; // Live
+  // static const String localEndPoint = "http://192.168.29.87:8004/"; // Local
+  // static const String liveEndPoint = "https://aiapi.uniqcrafts.com/"; // Live
+
+  static const String localEndPoint = "http://50.18.191.135/api/"; // Local
+  static const String liveEndPoint = "http://50.18.191.135/api/"; // Live
 
   // Base URL
   static String get apiEndPoint {
     return isLive ? liveEndPoint : localEndPoint;
   }
 
+  static const String login = "auth/login";
+  static const String signup = "auth/signup?decryptResponse=true";
   static const String loginSignup = "user/loginSignup";
   static const String getImageLink = "upload/media";
   static const String getCreditPoint = "user/getPoints";

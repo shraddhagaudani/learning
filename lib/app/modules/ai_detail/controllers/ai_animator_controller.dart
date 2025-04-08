@@ -92,6 +92,7 @@ class AiAnimatorController extends GetxController {
     isUploadingImageLoading.value = true;
 
     try {
+
       dio.FormData data = dio.FormData.fromMap({
         "image": await dio.MultipartFile.fromFile(file.path),
         "folderName": "user",

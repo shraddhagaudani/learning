@@ -1,9 +1,21 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/multipart/form_data.dart';
+import 'package:get/get_connect/http/src/multipart/form_data.dart';
+import 'package:get/get_connect/http/src/multipart/form_data.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart' as dio;
+
+import '../../../../Reusability/utils/app_constants.dart';
 import '../../../../Reusability/utils/app_strings.dart';
+import '../../../../Reusability/utils/network_dio/network_dio.dart';
+import '../../../../model/face_swap_text_to_image_getLink_model.dart';
+import '../../../../model/login_model.dart';
+import '../helper/aes_helper.dart';
 
 class LoginController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -13,8 +25,8 @@ class LoginController extends GetxController {
   final FocusNode emailFocus = FocusNode();
   final FocusNode passwordFocus = FocusNode();
 
-  TextEditingController passwordC = TextEditingController();
-  TextEditingController emailC = TextEditingController();
+  TextEditingController passwordC = TextEditingController(text: "Test@123");
+  TextEditingController emailC = TextEditingController(text: "test@gmail.com");
 
   RxBool isAutoValidate = false.obs;
   RxBool isHide = true.obs;
@@ -27,6 +39,7 @@ class LoginController extends GetxController {
 
   final box = GetStorage();
   final ScrollController scrollController = ScrollController();
+  final NetworkDioHttp networkDioHttp = NetworkDioHttp();
 
   @override
   void onInit() {
@@ -78,7 +91,7 @@ class LoginController extends GetxController {
 //check validation for email field value
   String? validateEmailField(String? value) {
     RegExp emailValid =
-        RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
     if (value == null || value.isEmpty) {
       return "Please enter your email address";
     } else if (!emailValid.hasMatch(value)) {
@@ -98,43 +111,144 @@ class LoginController extends GetxController {
     }
   }
 
-  // API Login Function
-  Future<void> login() async {
+  // Future<LoginResponseModel?> login({
+  //   required String email,
+  //   required String password,
+  // }) async {
+  //   try {
+  //     final bodyData = {
+  //       "email": emailC.text,
+  //       "password": passwordC.text,
+  //     };
+  //
+  //     final response = await networkDioHttp.postRequest(
+  //       url: ApiAppConstants.apiEndPoint+ApiAppConstants.login,
+  //       isHeader: false,
+  //       isBody: true,
+  //       bodyData: bodyData,
+  //     );
+  //
+  //     if (response?.statusCode == 200) {
+  //       print("ResponseData:$response?.data");
+  //       return LoginResponseModel.fromJson(response?.data);
+  //     } else {
+  //       print("Unexpected status code: ${response?.statusCode}");
+  //       return null;
+  //     }
+  //   } on DioException catch (e) {
+  //     print("Dio login error: ${e.message}");
+  //     return null;
+  //   }
+  // }
+
+
+  // Future<void> login({
+  //   required String email,
+  //   required String password,
+  // }) async {
+  //   try {
+  //     isLoading.value = true;
+  //     dio.FormData data = dio.FormData.fromMap({
+  //       'email': email,
+  //       'password': password,
+  //     });
+  //
+  //     final response = await networkDioHttp.uploadMediaRequest(
+  //       url: ApiAppConstants.apiEndPoint + ApiAppConstants.login,
+  //       isHeader: false,
+  //       name: "login",
+  //       formData: data,
+  //       isBearer: false,
+  //     );
+  //
+  //     if (response?.statusCode == 200) {
+  //       LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(response?.data);
+  //
+  //       if (loginResponseModel.status == true) {
+  //         isLoading.value = false;
+  //         // navigate to next screen
+  //       } else {
+  //         print("Login Response Error:${loginResponseModel.message}");
+  //       }
+  //
+  //       print("Login Response $loginResponseModel");
+  //     } else {
+  //       print("Unexpected status code: ${response?.statusCode}");
+  //       return null;
+  //     }
+  //   } catch (e, stackTrace) {
+  //     log("Error uploading image: $e\n$stackTrace");
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
+
+  Future<void> login({
+    required String email,
+    required String password,
+  }) async {
     try {
       isLoading.value = true;
 
-      Map<String, String> requestData = {
-        "email": emailC.text.trim(),
-        "password": passwordC.text.trim(),
-      };
+      // Create a JSON object with email and password
+      final credentialsJson = jsonEncode({
+        'email': email,
+        'password': password,
+      });
 
-      var url = Uri.parse("https://api.serviceworkfix.com/api/executive/login-executive");
-      var response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(requestData),
+      // Encrypt the whole JSON string
+      final encryptedData = AESHelper.encryptText(credentialsJson);
+
+      // Wrap into FormData with a single `data` field
+      dio.FormData formData = dio.FormData.fromMap({
+        'data': encryptedData,
+      });
+
+      final response = await networkDioHttp.uploadMediaRequest(
+        url: ApiAppConstants.apiEndPoint + ApiAppConstants.login,
+        isHeader: false,
+        name: "login",
+        formData: formData,
+        isBearer: false,
       );
 
-      print("Login response is:${response.body}");
+      if (response?.statusCode == 200 && response?.data != null) {
+        print("Function call");
+        print("🔐 Encrypted Response: ${response?.data}");
 
-      var data = jsonDecode(response.body);
+        // LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(response?.data);
+        final decryptedResponse = AESHelper.decryptText(response?.data);
+        if (decryptedResponse == null || decryptedResponse.isEmpty) {
+          throw Exception("Decryption failed or response is empty.");
+        }
+        print("🔓 Decrypted Response: $decryptedResponse");
 
-      if (response.statusCode == 200 && data["code"] == 1) {
-        clearVariable();
+        final Map<String, dynamic> jsonResponse = jsonDecode(decryptedResponse);
+        print("✅ Parsed JSON: $jsonResponse");
 
-        // Navigate to Home Screen (Example)
-        // Get.offAllNamed(RoutesName.servicepage);
+        final Map<String, dynamic> res = jsonDecode(decryptedResponse);
+        LoginResponseModel responseModel = LoginResponseModel.fromJson(jsonResponse);
+        print("✅ Parsed responseModel: $responseModel");
+
+
+        // if (loginResponseModel.status == true) {
+        //   isLoading.value = false;
+        //   // Success: Navigate or store token
+        // } else {
+        //   print("Login Response Error: ${loginResponseModel.message}");
+        // }
+
+        // print("Login Response: $loginResponseModel");
       } else {
-        message.value = data["message"] ?? "Login failed.";
-        Get.snackbar("Login Error", message.value);
+        print("Unexpected status code: ${response?.statusCode}");
       }
-    } catch (e) {
-      message.value = "Something went wrong. Please try again.";
-      Get.snackbar("Error", message.value);
+    } catch (e, stackTrace) {
+      log("Login error: $e\n$stackTrace");
     } finally {
       isLoading.value = false;
     }
   }
+
 
   late String btoken = box.read("token");
 
@@ -182,7 +296,10 @@ class LoginController extends GetxController {
     if (formKey.currentState!.validate()) {
       try {
         // Perform login logic here (API call, Firebase auth, etc.)
-        await login();
+        await login(
+          email: emailC.text,
+          password: passwordC.text,
+        );
 
         //executiveController.fetchExecutiveData(); //executive data
       } catch (e) {
@@ -211,5 +328,17 @@ class LoginController extends GetxController {
     passwordFocus.dispose();
     scrollController.dispose();
     super.dispose();
+  }
+
+  /// **Handle Errors & Show Toast**
+  void _handleError(String message) {
+    print("Error is: $message");
+    // isGeneratingImageLoading.value = false;
+    // isUploadingImageLoading.value = false;
+    // CustomSnackBar.showCustomToast(
+    //   toastType: ToastType.error,
+    //   message: message,
+    // );
+    Get.back();
   }
 }

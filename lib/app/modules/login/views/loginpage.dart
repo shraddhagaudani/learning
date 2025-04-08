@@ -46,7 +46,7 @@ class _HomePageState extends State<LoginPage> {
                     child: Container(
                       color: AppColors.whiteColor,
                     ),
-                  )
+                  ),
                 ],
               ),
               // Main Content Overlapping Both Backgrounds

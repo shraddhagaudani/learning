@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/route_manager.dart';
-
 import '../../../components/check_internet.dart';
 import '../../../main.dart';
 import '../../widgets/no_internet_screen.dart';
@@ -90,9 +89,11 @@ class NetworkDioHttp {
     if (hasInternet == true) {
       try {
         _dio.options.headers['Content-Type'] = 'application/json';
-        _dio.options.headers['Accept'] = 'application/json';
+        // _dio.options.headers['Accept'] = 'application/json';
         if (isHeader == true) {
-          _dio.options.headers['Authorization'] = isBearer == true ? 'Bearer ${dataStorage.read(AppStrings.token)}' : dataStorage.read(AppStrings.token);
+          _dio.options.headers['Authorization'] = isBearer == true
+              ? 'Bearer ${dataStorage.read(AppStrings.token)}'
+              : dataStorage.read(AppStrings.token);
         }
 
         logger.i("$name REQUEST URL: $url"); // Log the URL
@@ -101,11 +102,11 @@ class NetworkDioHttp {
         response = isBody == true
             ? await _dio.post(url, data: bodyData)
             : await _dio.post(
-          url,
-          options: Options(
-            responseType: ResponseType.plain,
-          ),
-        );
+                url,
+                options: Options(
+                  responseType: ResponseType.stream,
+                ),
+              );
 
         logger.i("$name RESPONSE: ${response.data}"); // Log the response data
         return response;
@@ -133,11 +134,16 @@ class NetworkDioHttp {
         _dio.options.headers['Content-Type'] = 'application/json';
         _dio.options.headers['Accept'] = 'application/json';
         if (isHeader) {
-          _dio.options.headers['Authorization'] = isBearer == true ? 'Bearer ${dataStorage.read(AppStrings.token)}' : dataStorage.read(AppStrings.token);
+          _dio.options.headers['Authorization'] = isBearer == true
+              ? 'Bearer ${dataStorage.read(AppStrings.token)}'
+              : dataStorage.read(AppStrings.token);
         }
 
         logger.i("$name REQUEST URL: $url"); // Log the URL
-        final response = await _dio.get(url,data: data,);
+        final response = await _dio.get(
+          url,
+          data: data,
+        );
 
         logger.i("$name RESPONSE: ${response.data}"); // Log the response data
         return response;
@@ -169,7 +175,9 @@ class NetworkDioHttp {
         _dio.options.headers['Content-Type'] = 'application/json';
         _dio.options.headers['Accept'] = 'application/json';
         if (isHeader == true) {
-          _dio.options.headers['Authorization'] = isBearer == true ? 'Bearer ${dataStorage.read(AppStrings.token)}' : dataStorage.read(AppStrings.token);
+          _dio.options.headers['Authorization'] = isBearer == true
+              ? 'Bearer ${dataStorage.read(AppStrings.token)}'
+              : dataStorage.read(AppStrings.token);
         }
 
         logger.i("$name REQUEST URL: $url"); // Log the URL
@@ -203,7 +211,9 @@ class NetworkDioHttp {
         _dio.options.headers['Content-Type'] = 'application/json';
         _dio.options.headers['Accept'] = 'application/json';
         if (isHeader == true) {
-          _dio.options.headers['Authorization'] = isBearer == true ? 'Bearer ${dataStorage.read(AppStrings.token)}' : dataStorage.read(AppStrings.token);
+          _dio.options.headers['Authorization'] = isBearer == true
+              ? 'Bearer ${dataStorage.read(AppStrings.token)}'
+              : dataStorage.read(AppStrings.token);
         }
 
         logger.i("$name REQUEST URL: $url"); // Log the URL
@@ -236,13 +246,22 @@ class NetworkDioHttp {
       try {
         _dio.options.headers['content-Type'] = "multipart/form-data";
         if (isHeader == true) {
-          _dio.options.headers['Authorization'] = isBearer == true ? 'Bearer ${dataStorage.read(AppStrings.token)}' : dataStorage.read(AppStrings.token);
+          _dio.options.headers['Authorization'] = isBearer == true
+              ? 'Bearer ${dataStorage.read(AppStrings.token)}'
+              : dataStorage.read(AppStrings.token);
         }
 
         logger.i("$name REQUEST URL: $url"); // Log the URL
         logger.i("$name REQUEST Body: $formData"); // Log the body data
 
-        response = await _dio.post(url, data: formData, options: Options(headers: _dio.options.headers));
+        response = await _dio.post(
+          url,
+          data: formData,
+          options: Options(
+            headers: _dio.options.headers,
+            contentType: Headers.formUrlEncodedContentType,
+          )
+        );
 
         logger.i("$name RESPONSE: ${response.data}"); // Log the response data
         return response;
