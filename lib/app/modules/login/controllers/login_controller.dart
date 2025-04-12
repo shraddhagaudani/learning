@@ -58,45 +58,7 @@ class LoginController extends GetxController {
   togglePass() {
     isHide.value = !isHide.value;
   }
-
-  //check validation for name field value
-  String? validateNameField(String? value) {
-    if (value!.isEmpty) {
-      return "Please enter your full name";
-    } else if (value.length < 4) {
-      return "Name must be 4 character long";
-    }
-    return null;
-  }
-
-  String? validatePasswordField(String? value) {
-    if (value!.isEmpty) {
-      return "Please enter your password";
-    } else {
-      return null;
-    }
-  }
-
-  //check validation for field value
-  String? validateString(String value, String type) {
-    if (value.isEmpty) {
-      return "$type is required";
-    }
-    return null;
-  }
-
-//check validation for email field value
-  String? validateEmailField(String? value) {
-    RegExp emailValid =
-        RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    if (value == null || value.isEmpty) {
-      return "Please enter your email address";
-    } else if (!emailValid.hasMatch(value)) {
-      return "Please provide a valid email address";
-    }
-    return null;
-  }
-
+  
   // Load Saved Login Data
   void loadRememberedUser() {
     Token();
@@ -222,11 +184,6 @@ class LoginController extends GetxController {
         final Map<String, dynamic> jsonResponse = jsonDecode(decryptedResponse);
         print("✅ Parsed JSON: $jsonResponse");
 
-        // final Map<String, dynamic> res = jsonDecode(decryptedResponse);
-        //
-        // print("Res:$res");
-        // final responseModel = LoginResponseModel.fromJson(jsonResponse);
-        // print("✅ Parsed responseModel: $responseModel");
 
         if (jsonResponse['status'] == true) {
           LoginResponseModel responseModel = LoginResponseModel.fromJson(jsonResponse);
@@ -259,38 +216,6 @@ class LoginController extends GetxController {
 
   late String btoken = box.read("token");
 
-  ///Api for logout
-  Future<void> logoutApi() async {
-    try {
-      // callController.isLoading(true);
-      Map<String, String> requestData = {"clientType": "app"};
-
-      var url = Uri.parse("https://api.serviceworkfix.com/api/auth/logout");
-      var response = await http.post(
-        url,
-        headers: {'authorization': 'Bearer $btoken', 'accept': 'application/json'},
-        body: jsonEncode(requestData),
-      );
-
-      if (response.statusCode == 204) {
-        logout();
-      } else {
-        Get.snackbar("Error", "Logout Failed!");
-      }
-    } catch (e) {
-      Get.snackbar("Error", message.value);
-    } finally {}
-    // callController.isLoading(false);
-  }
-
-  void logout() {
-    // Get.offAllNamed(RoutesName.loginpage); // Redirect to login screen
-    box.remove("token");
-    box.remove("email");
-    box.remove("password");
-    box.remove("rememberMe");
-    box.remove("fcmToken");
-  }
 
   //on SignIn Button tap
   Future<void> onLogInButtonPressed() async {
