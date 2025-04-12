@@ -2,26 +2,27 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:learning/Reusability/utils/validator.dart';
-import 'package:learning/Reusability/widgets/common_widget.dart';
-import 'package:learning/routes/app_pages.dart';
+import 'package:learning/app/modules/signup/controller/signup_controller.dart';
+
 import '../../../../Reusability/utils/app_colors.dart';
 import '../../../../Reusability/utils/app_images.dart';
 import '../../../../Reusability/utils/app_text_style.dart';
 import '../../../../Reusability/utils/static_decoration.dart';
+import '../../../../Reusability/utils/validator.dart';
 import '../../../../Reusability/widgets/button_widget.dart';
+import '../../../../Reusability/widgets/common_widget.dart';
 import '../../../../Reusability/widgets/textformfield_widget.dart';
-import '../controllers/login_controller.dart';
+import '../../../../routes/app_pages.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<LoginPage> createState() => _HomePageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _HomePageState extends State<LoginPage> {
-  final LoginController loginController = Get.put(LoginController());
+class _SignupPageState extends State<SignupPage> {
+  final SignUpController signUpController = Get.put(SignUpController());
 
   @override
   Widget build(BuildContext context) {
@@ -66,16 +67,16 @@ class _HomePageState extends State<LoginPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(height: MediaQuery.of(context).size.height * 0.08),
-                        Image.asset(
-                          AppImage.appIcon,
-                          fit: BoxFit.fill,
-                          height: MediaQuery.of(context).size.height * 0.11,
-                          width: MediaQuery.of(context).size.width * 0.21,
-                        ),
+                        // Image.asset(
+                        //   AppImage.appIcon,
+                        //   fit: BoxFit.fill,
+                        //   height: MediaQuery.of(context).size.height * 0.11,
+                        //   width: MediaQuery.of(context).size.width * 0.21,
+                        // ),
                         HBox(50),
-                        Text("Welcome back!", style: AppTextStyle.BoldBlackTextStyle),
+                        Text("Create Account!", style: AppTextStyle.BoldBlackTextStyle),
                         Text(
-                          "Login to your account",
+                          "Sign-Up to your account",
                           style: TextStyle(
                             color: AppColors.greyColor,
                             fontWeight: FontWeight.w500,
@@ -106,32 +107,108 @@ class _HomePageState extends State<LoginPage> {
                             children: [
                               HBox(5),
                               Form(
-                                key: loginController.formKey,
+                                key: signUpController.formKey,
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 5, left: 5),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      //email:
+                                      //firstname:
                                       Obx(() {
                                         return MyTextField(
-                                          focusNode: loginController.emailFocus,
-                                          key: loginController.widgetKey[0],
-                                          controller: loginController.emailC,
-                                          autoValidateMode: (loginController.isAutoValidate.value)
+                                          focusNode: signUpController.firstNameFocus,
+                                          key: signUpController.widgetKey[0],
+                                          controller: signUpController.firstnameC,
+                                          autoValidateMode: (signUpController.isAutoValidate.value)
                                               ? AutovalidateMode.onUserInteraction
                                               : AutovalidateMode.disabled,
                                           textFieldType:
-                                              loginController.commonTextMessages.emailFormat,
-                                          keyboardType: TextInputType.emailAddress,
-                                          labelText: "Email",
-                                          errorText: (loginController.errMsg.value.isNotEmpty &&
-                                                  loginController.errMsg.value.contains("Email"))
-                                              ? loginController.errMsg.value
+                                              signUpController.commonTextMessages.firstnameFormat,
+                                          keyboardType: TextInputType.text,
+                                          labelText: "Firstname",
+                                          errorText: (signUpController.errMsg.value.isNotEmpty &&
+                                                  signUpController.errMsg.value
+                                                      .contains("FirstName"))
+                                              ? signUpController.errMsg.value
                                               : null,
                                           validator: (value) {
-                                            // return loginController.validateEmailField(value);
+                                            return validateNameField(value);
+                                          },
+                                          textInputAction: TextInputAction.next,
+                                        );
+                                      }),
+                                      HBox(15),
+                                      //lastname:
+                                      Obx(() {
+                                        return MyTextField(
+                                          focusNode: signUpController.lastNameFocus,
+                                          key: signUpController.widgetKey[1],
+                                          controller: signUpController.lastnameC,
+                                          autoValidateMode: (signUpController.isAutoValidate.value)
+                                              ? AutovalidateMode.onUserInteraction
+                                              : AutovalidateMode.disabled,
+                                          textFieldType:
+                                              signUpController.commonTextMessages.firstnameFormat,
+                                          keyboardType: TextInputType.text,
+                                          labelText: "LastName",
+                                          errorText: (signUpController.errMsg.value.isNotEmpty &&
+                                                  signUpController.errMsg.value
+                                                      .contains("LastName"))
+                                              ? signUpController.errMsg.value
+                                              : null,
+                                          validator: (value) {
+                                            return validateNameField(value);
+                                          },
+                                          textInputAction: TextInputAction.next,
+                                        );
+                                      }),
+                                      HBox(15),
+
+                                      //type:
+                                      Obx(() {
+                                        return MyTextField(
+                                          focusNode: signUpController.typeFocus,
+                                          key: signUpController.widgetKey[2],
+                                          controller: signUpController.typeC,
+                                          autoValidateMode: (signUpController.isAutoValidate.value)
+                                              ? AutovalidateMode.onUserInteraction
+                                              : AutovalidateMode.disabled,
+                                          textFieldType:
+                                          signUpController.commonTextMessages.textFormat,
+                                          keyboardType: TextInputType.text,
+                                          labelText: "Type",
+                                          errorText: (signUpController.errMsg.value.isNotEmpty &&
+                                              signUpController.errMsg.value
+                                                  .contains("Type"))
+                                              ? signUpController.errMsg.value
+                                              : null,
+                                          validator: (value) {
+                                            return validateNameField(value);
+                                          },
+                                          textInputAction: TextInputAction.next,
+                                        );
+                                      }),
+                                      HBox(15),
+
+                                      //email:
+                                      Obx(() {
+                                        return MyTextField(
+                                          focusNode: signUpController.emailFocus,
+                                          key: signUpController.widgetKey[3],
+                                          controller: signUpController.emailC,
+                                          autoValidateMode: (signUpController.isAutoValidate.value)
+                                              ? AutovalidateMode.onUserInteraction
+                                              : AutovalidateMode.disabled,
+                                          textFieldType:
+                                              signUpController.commonTextMessages.emailFormat,
+                                          keyboardType: TextInputType.emailAddress,
+                                          labelText: "Email",
+                                          errorText: (signUpController.errMsg.value.isNotEmpty &&
+                                                  signUpController.errMsg.value.contains("Email"))
+                                              ? signUpController.errMsg.value
+                                              : null,
+                                          validator: (value) {
                                             return validateEmailField(value);
                                           },
                                           textInputAction: TextInputAction.next,
@@ -141,36 +218,36 @@ class _HomePageState extends State<LoginPage> {
                                       Obx(
                                         () {
                                           return MyTextField(
-                                            focusNode: loginController.passwordFocus,
-                                            key: loginController.widgetKey[1],
-                                            autoValidateMode: (loginController.isAutoValidate.value)
-                                                ? AutovalidateMode.onUserInteraction
-                                                : AutovalidateMode.disabled,
-                                            controller: loginController.passwordC,
-                                            obscureText: loginController.isHide.value,
+                                            focusNode: signUpController.passwordFocus,
+                                            key: signUpController.widgetKey[4],
+                                            autoValidateMode:
+                                                (signUpController.isAutoValidate.value)
+                                                    ? AutovalidateMode.onUserInteraction
+                                                    : AutovalidateMode.disabled,
+                                            controller: signUpController.passwordC,
+                                            obscureText: signUpController.isHide.value,
                                             textInputAction: TextInputAction.done,
-                                            errorText: (loginController.errMsg.value.isNotEmpty &&
-                                                    loginController.errMsg.value
+                                            errorText: (signUpController.errMsg.value.isNotEmpty &&
+                                                    signUpController.errMsg.value
                                                         .toLowerCase()
                                                         .contains(
                                                           "password",
                                                         ))
-                                                ? loginController.errMsg.value
+                                                ? signUpController.errMsg.value
                                                 : null,
                                             textFieldType:
-                                                loginController.commonTextMessages.passFormat,
+                                                signUpController.commonTextMessages.passFormat,
                                             labelText: "Password",
                                             validator: (value) {
-                                              // return loginController.validatePasswordField(value);
                                               return validatePasswordField(value);
                                             },
                                             onChanged: (p0) {
-                                              loginController.errMsg.value = '';
+                                              signUpController.errMsg.value = '';
                                             },
                                             suffixIcon: InkWell(
-                                              onTap: loginController.togglePass,
+                                              onTap: signUpController.togglePass,
                                               child: Icon(
-                                                loginController.isHide.value
+                                                signUpController.isHide.value
                                                     ? Icons.visibility_off
                                                     : Icons.remove_red_eye_outlined,
                                               ),
@@ -181,23 +258,18 @@ class _HomePageState extends State<LoginPage> {
                                       // Remember Me Toggle
                                       HBox(35),
                                       Obx(() {
-                                        return (loginController.isLoading.value)
+                                        return (signUpController.isLoading.value)
                                             ? const CircularProgressButtonWidget()
                                             : Center(
                                                 child: ButtonWidget(
                                                   onTap: () async {
                                                     FocusScope.of(context).unfocus();
-                                                    await loginController.onLogInButtonPressed();
+                                                    await signUpController.onSignUpButtonPressed();
                                                   },
-                                                  data: "Login",
+                                                  data: "Signup",
                                                 ),
                                               );
                                       }),
-                                      /*SizedBox(
-                                        height: height * 0.010,
-                                      ),*/
-                                      /*Obx(() => (!loginController.isLoading.value) ? Text(loginController.message.value,
-                                      style: const TextStyle(color: Colors.red)) : Container()),*/
                                     ],
                                   ),
                                 ),
@@ -211,16 +283,16 @@ class _HomePageState extends State<LoginPage> {
                           child: Center(
                             child: RichText(
                               text: TextSpan(
-                                  text: 'Don\'t have an account?',
+                                  text: 'Already have an account?',
                                   style: AppTextStyle.regularBlackTextStyle,
                                   children: <TextSpan>[
                                     TextSpan(
-                                        text: ' Sign up',
+                                        text: ' Login',
                                         style: AppTextStyle.regularYellowTextStyle,
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () {
                                             Get.toNamed(
-                                                Routes.signupPage); // navigate to desired screen
+                                                Routes.loginPage); // navigate to desired screen
                                           })
                                   ]),
                             ),

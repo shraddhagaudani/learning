@@ -16,4 +16,28 @@ class AppTextStyle {
       color: AppColors.whiteColor,
     ),
   );
+  static TextStyle regularBlackTextStyle = getAppFont(
+    const TextStyle(
+      fontSize: 14,
+      fontFamily: "Poppins",
+      fontWeight: FontWeight.w400,
+      color: AppColors.blackColor,
+    ),
+  );
+  static TextStyle regularYellowTextStyle = getAppFont(
+    const TextStyle(
+      fontSize: 14,
+      fontFamily: "Poppins",
+      fontWeight: FontWeight.w400,
+      color: AppColors.orangeColor,
+    ),
+  );
+  static TextStyle BoldBlackTextStyle = getAppFont(
+    const TextStyle(
+      fontSize: 16,
+      fontFamily: "Poppins",
+      fontWeight: FontWeight.bold,
+      color: AppColors.blackColor,
+    ),
+  );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learning/Reusability/utils/app_text_style.dart';
 
 import '../utils/app_colors.dart';
 import '../utils/static_decoration.dart';
@@ -25,17 +26,10 @@ class ButtonWidget extends StatelessWidget {
         width: width * 0.900,
         padding: padding15,
         decoration: BoxDecoration(
-          color: AppColors.black10,
+          color: AppColors.yellowColor,
           borderRadius: circular10BorderRadius,
         ),
-        child: Text(
-          data,
-          style: TextStyle(
-            color: AppColors.blackColor,
-            fontSize: 18,
-            fontWeight: fontWeightbold,
-          ),
-        ),
+        child: Text(data, style: AppTextStyle.BoldBlackTextStyle),
       ),
     );
   }

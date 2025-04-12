@@ -195,7 +195,7 @@ class MyTextField extends StatelessWidget {
   List<TextInputFormatter> inputFormattersFun() {
     final CommonTextMessages validate = CommonTextMessages();
 
-    if (textFieldType == validate.nameFormat) {
+    if (textFieldType == validate.firstnameFormat) {
       return [
         LengthLimitingTextInputFormatter(35),
         NoLeadingSpaceFormatter(),

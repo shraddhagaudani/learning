@@ -9,7 +9,8 @@ class CommonTextMessages {
   }
 
   ///TextFiled Format
-  final String nameFormat = "name";
+  final String firstnameFormat = "firstname";
+  final String lastnameFormat = "lastname";
   final String emailFormat = "email";
   final String passFormat = "password";
   final String numberFormat = "number";

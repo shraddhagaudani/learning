@@ -14,7 +14,7 @@ class ApiAppConstants {
   }
 
   static const String login = "auth/login";
-  static const String signup = "auth/signup?decryptResponse=true";
+  static const String signup = "auth/signup";
   static const String loginSignup = "user/loginSignup";
   static const String getImageLink = "upload/media";
   static const String getCreditPoint = "user/getPoints";

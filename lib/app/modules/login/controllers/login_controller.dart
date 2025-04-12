@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/multipart/form_data.dart';
-import 'package:get/get_connect/http/src/multipart/form_data.dart';
-import 'package:get/get_connect/http/src/multipart/form_data.dart';
+
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart' as dio;
@@ -13,7 +10,7 @@ import 'package:dio/dio.dart' as dio;
 import '../../../../Reusability/utils/app_constants.dart';
 import '../../../../Reusability/utils/app_strings.dart';
 import '../../../../Reusability/utils/network_dio/network_dio.dart';
-import '../../../../model/face_swap_text_to_image_getLink_model.dart';
+import '../../../../main.dart';
 import '../../../../model/login_model.dart';
 import '../helper/aes_helper.dart';
 
@@ -25,8 +22,8 @@ class LoginController extends GetxController {
   final FocusNode emailFocus = FocusNode();
   final FocusNode passwordFocus = FocusNode();
 
-  TextEditingController passwordC = TextEditingController(text: "Test@123");
-  TextEditingController emailC = TextEditingController(text: "test@gmail.com");
+  TextEditingController passwordC = TextEditingController();
+  TextEditingController emailC = TextEditingController();
 
   RxBool isAutoValidate = false.obs;
   RxBool isHide = true.obs;
@@ -91,7 +88,7 @@ class LoginController extends GetxController {
 //check validation for email field value
   String? validateEmailField(String? value) {
     RegExp emailValid =
-    RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+        RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
     if (value == null || value.isEmpty) {
       return "Please enter your email address";
     } else if (!emailValid.hasMatch(value)) {
@@ -140,7 +137,6 @@ class LoginController extends GetxController {
   //     return null;
   //   }
   // }
-
 
   // Future<void> login({
   //   required String email,
@@ -218,7 +214,7 @@ class LoginController extends GetxController {
 
         // LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(response?.data);
         final decryptedResponse = AESHelper.decryptText(response?.data);
-        if (decryptedResponse == null || decryptedResponse.isEmpty) {
+        if (decryptedResponse.isEmpty) {
           throw Exception("Decryption failed or response is empty.");
         }
         print("🔓 Decrypted Response: $decryptedResponse");
@@ -226,10 +222,24 @@ class LoginController extends GetxController {
         final Map<String, dynamic> jsonResponse = jsonDecode(decryptedResponse);
         print("✅ Parsed JSON: $jsonResponse");
 
-        final Map<String, dynamic> res = jsonDecode(decryptedResponse);
-        LoginResponseModel responseModel = LoginResponseModel.fromJson(jsonResponse);
-        print("✅ Parsed responseModel: $responseModel");
+        // final Map<String, dynamic> res = jsonDecode(decryptedResponse);
+        //
+        // print("Res:$res");
+        // final responseModel = LoginResponseModel.fromJson(jsonResponse);
+        // print("✅ Parsed responseModel: $responseModel");
 
+        if (jsonResponse['status'] == true) {
+          LoginResponseModel responseModel = LoginResponseModel.fromJson(jsonResponse);
+          print("✅ Parsed responseModel: $responseModel");
+
+          logger.i("User-Email: ${responseModel.data.user.email}");
+          logger.i("User-token: ${responseModel.data.user.token}");
+          logger.i("User-Id: ${responseModel.data.user.id}");
+
+          // Success logic (e.g., save token, navigate, etc.)
+        } else {
+          print("❌ Login failed: ${jsonResponse['message']}");
+        }
 
         // if (loginResponseModel.status == true) {
         //   isLoading.value = false;
@@ -237,8 +247,6 @@ class LoginController extends GetxController {
         // } else {
         //   print("Login Response Error: ${loginResponseModel.message}");
         // }
-
-        // print("Login Response: $loginResponseModel");
       } else {
         print("Unexpected status code: ${response?.statusCode}");
       }
@@ -248,7 +256,6 @@ class LoginController extends GetxController {
       isLoading.value = false;
     }
   }
-
 
   late String btoken = box.read("token");
 

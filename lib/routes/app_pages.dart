@@ -16,6 +16,7 @@ import '../app/modules/project/bindings/project_binding.dart';
 import '../app/modules/project/views/project_view.dart';
 import '../app/modules/setting/bindings/setting_binding.dart';
 import '../app/modules/setting/views/setting_view.dart';
+import '../app/modules/signup/views/signup_page.dart';
 import '../app/modules/splash/bindings/splash_binding.dart';
 import '../app/modules/splash/views/splash_view.dart';
 import '../model/getAll_category_model.dart';
@@ -97,9 +98,15 @@ class AppPages {
         filterName: '',
       ),
       binding: PhotoSelectBinding(),
-    ),GetPage(
+    ),
+    GetPage(
       name: _Paths.loginPage,
       page: () => LoginPage(),
+      // binding: PhotoSelectBinding(),
+    ),
+    GetPage(
+      name: _Paths.signupPage,
+      page: () => SignupPage(),
       // binding: PhotoSelectBinding(),
     ),
   ];
