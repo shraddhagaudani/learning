@@ -38,7 +38,7 @@ class UserModel {
   final String lastName; // yes
   final String email;
   final String? profilePicture;
-  final String bio;
+  final String? bio;
   final bool emailVerified;
   final int dailyLimit;
   final String type;

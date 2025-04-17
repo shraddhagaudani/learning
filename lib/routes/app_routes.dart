@@ -14,6 +14,7 @@ abstract class Routes {
   static const selectPhotoView = _Paths.selectPhotoView;
   static const loginPage = _Paths.loginPage;
   static const signupPage = _Paths.signupPage;
+  static const profilePage = _Paths.profilePage;
 }
 
 abstract class _Paths {
@@ -30,4 +31,5 @@ abstract class _Paths {
   static const selectPhotoView = '/selectPhotoView';
   static const loginPage = '/loginpage';
   static const signupPage = '/signuppage';
+  static const profilePage = '/profilepage';
 }

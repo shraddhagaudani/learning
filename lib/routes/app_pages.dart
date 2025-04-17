@@ -1,5 +1,6 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:learning/app/modules/login/views/loginpage.dart';
+import 'package:learning/app/modules/profile/views/profile_page.dart';
 import '../app/modules/ai_detail/bindings/ai_animator_binding.dart';
 import '../app/modules/ai_detail/views/ai_animator_view.dart';
 import '../app/modules/crop_image/bindings/crop_image_binding.dart';
@@ -107,6 +108,11 @@ class AppPages {
     GetPage(
       name: _Paths.signupPage,
       page: () => SignupPage(),
+      // binding: PhotoSelectBinding(),
+    ),
+    GetPage(
+      name: _Paths.profilePage,
+      page: () => ProfilePage(),
       // binding: PhotoSelectBinding(),
     ),
   ];

@@ -12,6 +12,7 @@ import '../../../../Reusability/utils/app_strings.dart';
 import '../../../../Reusability/utils/network_dio/network_dio.dart';
 import '../../../../main.dart';
 import '../../../../model/login_model.dart';
+import '../../../../routes/app_pages.dart';
 import '../helper/aes_helper.dart';
 
 class LoginController extends GetxController {
@@ -46,7 +47,7 @@ class LoginController extends GetxController {
   }
 
   Token() {
-    String? token = box.read("token");
+    String? token = dataStorage.read(AppStrings.token);
     if (token != null) {
       print("Stored Token: $token");
     } else {
@@ -58,7 +59,7 @@ class LoginController extends GetxController {
   togglePass() {
     isHide.value = !isHide.value;
   }
-  
+
   // Load Saved Login Data
   void loadRememberedUser() {
     Token();
@@ -184,14 +185,21 @@ class LoginController extends GetxController {
         final Map<String, dynamic> jsonResponse = jsonDecode(decryptedResponse);
         print("✅ Parsed JSON: $jsonResponse");
 
-
         if (jsonResponse['status'] == true) {
           LoginResponseModel responseModel = LoginResponseModel.fromJson(jsonResponse);
           print("✅ Parsed responseModel: $responseModel");
 
+          String token = responseModel.data.user.token;
+
+          dataStorage.write(AppStrings.token, token);
+
           logger.i("User-Email: ${responseModel.data.user.email}");
-          logger.i("User-token: ${responseModel.data.user.token}");
+          logger.i("User-token: ${token}");
           logger.i("User-Id: ${responseModel.data.user.id}");
+
+
+
+          Get.offAllNamed(Routes.profilePage);
 
           // Success logic (e.g., save token, navigate, etc.)
         } else {
@@ -215,7 +223,6 @@ class LoginController extends GetxController {
   }
 
   late String btoken = box.read("token");
-
 
   //on SignIn Button tap
   Future<void> onLogInButtonPressed() async {
